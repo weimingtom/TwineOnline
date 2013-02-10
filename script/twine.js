@@ -1,13 +1,13 @@
-
 var nextpid = 2;
 
-function addLine(pid1, pid2){
+function drawLine(pid1, pid2){
+  var yOffset = $('main').position().top;
   var $e1 = $('#p_' + pid1);
   var $e2 = $('#p_' + pid2);
-  var x1 = $e1.position().left + 45 ;
-  var y1 = $e1.position().top + 100;
-  var x2 = $e2.position().left + 45;
-  var y2 = $e2.position().top +100;
+  var x1 = $e1.position().left + $e1.width()/2;
+  var y1 = $e1.position().top + yOffset + $e1.height()/2;
+  var x2 = $e2.position().left + $e2.width()/2;
+  var y2 = $e2.position().top + yOffset + $e2.height()/2;
    
 
   var length = Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
@@ -35,7 +35,7 @@ function redrawLines(pid){
     var from = $(this).attr('from');
     var to = $(this).attr('to');
     $(this).remove();
-    addLine(from, to);
+    drawLine(from, to);
   });
 }
 
@@ -66,17 +66,28 @@ function openPassage(p){
     passage = $(p).select('.passage') || $(p).parent('.passage');
     if(passage) pid = passage.attr('pid');
   }
-  alert('Passage ' + pid);
-}
-
-function createEditorWindow(pid){
+  
+  var $editor = $($('#edit_' + pid) [0]|| createEditorWindow(pid)[0])
+  $editor.css({'top':passage.position().top + passage.height()/2, 'left':passage.position().left + passage.width()/2, 'display':'none'});
+  $editor.fadeIn();
   
 }
 
-$('#mainmain').dblclick(function(e){
-  createPassage(e.pageX, e.pageY);
-  alert('dbl');
-});
+function createEditorWindow(pid){   
+  $('main').append("<div id=\"edit_" + pid + "\" class=\"draggable edit popup\"><div class='titlebar'><div class='title'>Edit<input id=\"edit_" + pid + "_close\" class=\"barbutton closebutton\" type='button' value='X'/></div><div class='clear'></div></div><div class='topfields><div class='field'><label for=\"edit_" + pid + "_title\">Title</label><input id='edit_" + pid + "_title' type='text'/></div><div class='field'><label for=\"edit_" + pid + "_tags\">Tags (separate with spaces)</label><input id='edit_" + pid + "_tags' type='text'/></div></div><textarea id='edit_" + pid + "_text' type='textarea'></textarea></div>");
+  var $e = $('#edit_'+pid);
+  $e.draggable();
+  $e.select('.closebutton').click(function(){
+    closeEditorButton(this);
+  });
+  return $e;
+}
+
+function closeEditorButton(button){
+  var editor = $(button).attr('id');
+  editor = editor.replace('_close','');
+  $('#' + editor).fadeOut();
+};
 
 $(function(){
   $('.passage').draggable({
@@ -87,11 +98,19 @@ $(function(){
     }
   );
   $('.edit').draggable();
-  $('.passage').dblclick(function(e){
-    openPassage(this);
+  // $('.passage').dblclick(function(e){
+    // openPassage(this);
+    // if(e.stopPropagation) e.stopPropagation();
+    // else if(e.preventPropagation) e.preventPropagation();
+  // });
+
+  
+  $('.closebutton').click(function(){
+    closeEditorButton(this);
   });
-  $('.passage').click(function(e){
-    e.preventPropagation();
+  
+  $('main').dblclick(function(e){
+    new Passage(e.pageX, e.pageY);
   });
   
   $(document).bind("contextmenu", function(event) {
@@ -101,4 +120,7 @@ $(function(){
   $(document).bind("click",function(event){
     $('menu').fadeOut("fast");
   });
+ 
+  
+  drawLine(0,1);
 });
