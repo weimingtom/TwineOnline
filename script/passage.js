@@ -19,6 +19,10 @@ var Passage = function(x, y, title, tags, text){
     drag:function(event){
       var pid = $(event.target).attr('pid');
       redrawLines(pid);
+    },
+    stop:function(event){
+      var pid = $(event.target).attr('pid');
+      redrawLines(pid);
     }
   });
   

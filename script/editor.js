@@ -8,7 +8,7 @@ var Editor = function(pid){
   this.editor = $('#edit_'+pid);
   $('#edit_'+pid+'_title').val($('#p_'+pid+' .title').text());
   $('#edit_'+pid+'_tags').val($('#p_'+pid+' .tags').text()||'');
-  $('#edit_'+pid+'_text').val($('#p_'+pid+' .text').text()||'');
+  $('#edit_'+pid+'_text').html($('#p_'+pid+' .text').html()||'');
   
   this.editor.draggable({handle:".title"});
   this.editor.find('.closebutton').click(function(){
