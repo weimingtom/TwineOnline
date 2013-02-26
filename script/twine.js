@@ -1,5 +1,3 @@
-var nextpid = 2;
-
 function drawLine(pid1, pid2){
   var yOffset = $('main').position().top;
   var $e1 = $('#p_' + pid1);
@@ -39,88 +37,38 @@ function redrawLines(pid){
   });
 }
 
-function createPassage(x, y){
 
-  var passage = $('<div>')
-    .appendTo('main')
-    .addClass('passage').addClass('draggable')
-    .attr('id', 'p_'+nextpid++)
-    .offset({left: x , top:y});
 
-  passage.draggable({
-    drag:function(event){
-      var pid = $(event.target).attr('pid');
-      redrawLines(pid);
-    }
-  });
-}
 
-function openPassage(p){
-  var passage = null;
-  var pid;
-  if(typeof(p) == 'number'){
-    passage = $('p_' + p);
-    pid = p;
-  }
-  if(p instanceof(Element)){
-    passage = $(p).select('.passage') || $(p).parent('.passage');
-    if(passage) pid = passage.attr('pid');
-  }
-  
-  var $editor = $($('#edit_' + pid) [0]|| createEditorWindow(pid)[0])
-  $editor.css({'top':passage.position().top + passage.height()/2, 'left':passage.position().left + passage.width()/2, 'display':'none'});
-  $editor.fadeIn();
-  
-}
-
-function createEditorWindow(pid){   
-  $('main').append("<div id=\"edit_" + pid + "\" class=\"draggable edit popup\"><div class='titlebar'><div class='title'>Edit<input id=\"edit_" + pid + "_close\" class=\"barbutton closebutton\" type='button' value='X'/></div><div class='clear'></div></div><div class='topfields><div class='field'><label for=\"edit_" + pid + "_title\">Title</label><input id='edit_" + pid + "_title' type='text'/></div><div class='field'><label for=\"edit_" + pid + "_tags\">Tags (separate with spaces)</label><input id='edit_" + pid + "_tags' type='text'/></div></div><textarea id='edit_" + pid + "_text' type='textarea'></textarea></div>");
-  var $e = $('#edit_'+pid);
-  $e.draggable();
-  $e.select('.closebutton').click(function(){
-    closeEditorButton(this);
-  });
-  return $e;
-}
-
-function closeEditorButton(button){
-  var editor = $(button).attr('id');
-  editor = editor.replace('_close','');
-  $('#' + editor).fadeOut();
-};
 
 $(function(){
-  $('.passage').draggable({
-      drag:function(event){
-        var pid = $(event.target).attr('pid');
-        redrawLines(pid);
-      }
-    }
-  );
-  $('.edit').draggable();
-  // $('.passage').dblclick(function(e){
-    // openPassage(this);
-    // if(e.stopPropagation) e.stopPropagation();
-    // else if(e.preventPropagation) e.preventPropagation();
-  // });
-
-  
-  $('.closebutton').click(function(){
-    closeEditorButton(this);
-  });
-  
+    
   $('main').dblclick(function(e){
     new Passage(e.pageX, e.pageY);
+  });
+  
+  $('main').droppable({accept: function(elem){
+      var pos = elem.position();
+      if(pos.left > 4 && pos.top > 4) return true;
+      return false;
+    }
   });
   
   $(document).bind("contextmenu", function(event) {
     event.preventDefault();
     $("menu").css({top: event.pageY + "px", left: event.pageX + "px"}).fadeIn("fast");
   });
+  
   $(document).bind("click",function(event){
     $('menu').fadeOut("fast");
   });
- 
   
-  drawLine(0,1);
+  $(document).keydown(function(e){
+    if(e.keyCode == 46){ //46 = del
+      if(Passage.selected) Passage.selected.passage.remove();
+    }
+  });
+
+  var start = new Passage(50, 95, 'Start', null, 'Your story will display this passage first. Edit it by double-clicking it.');
+  
 });

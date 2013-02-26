@@ -74,8 +74,23 @@ main, #main, layoutArea{
 	border:5px dashed #aaa;
 
 }
-
-.popup{
+footer{
+  position:fixed;
+  right:0px;
+  bottom:0px;
+  padding:1em;
+  color:#999;
+  
+}
+footer a{
+  color:#aaa;
+  text-decoration:none;
+}
+footer a:hover{
+  color:#fff;
+  text-shadow:0 0 2px #fff;
+}
+.edit{
 	display:block;
 	position:absolute;
 	z-index:999;
@@ -83,14 +98,14 @@ main, #main, layoutArea{
 	background:#ddd;
 }
 
-.popup .titlebar {
+.edit .titlebar {
 	width:100%;
 	background-color:#090;
 	color:#fff;
 	line-height:1.55em;
 	vertical-align:center;
 }
-.popup .titlebar .barbutton{
+.edit .titlebar .barbutton{
 	float:right;
 	border:none;
 	border-top:1px solid #0c0;
@@ -100,29 +115,35 @@ main, #main, layoutArea{
 	font-weight:bold;
 }
 
-.popup .titlebar .barbutton:hover{
+.edit .titlebar .barbutton:hover{
 	background:#0b0;
 }
 
 .edit{
 	top:400px;
 	left:400px;
-	height:420px;
-	width:600px;
+  min-height:300px;
+	min-width:300px;
+	min-height:420px;
+	min-width:600px;
+  
 }
-.popup label{
+.edit label{
 	display:table-cell;
 }
-.popup .field{
+.edit .field{
 	display:table-row;
 }
-.popup .field input{
+.edit .field input{
 	width:350px;
 	margin-left:3em;
 }
-.popup textarea{
+.edit .passagetext{
 	width:100%;
-	height:20em;
+	height:21.5em;
+  background:#fff;
+  overflow-y:scroll;
+  resize:both;
 }
 
 .clear{
@@ -140,9 +161,7 @@ main, #main, layoutArea{
   z-index:2;
   cursor:move;
 }
-.selectedpassage{
-  z-index:4;
-}
+
 .passage .title{
   max-height:1.3em;
   padding:.1em;
@@ -151,6 +170,27 @@ main, #main, layoutArea{
   background:#090;
   color:#fff;
 }
+
+.passage .tags{
+  height:0px;
+  overflow:hidden;
+}
+
+.passage .text{
+  width:100%;
+  word-wrap:break-word;
+  overflow:hidden;
+}
+
+.selectedpassage{
+  z-index:4;
+  border:1px dashed lime;
+  box-shadow: 0px 0px 4px #000;
+}
+.selectedpassage .title{
+  background:#0b0;
+}
+
 .line{
   transform-origin: 0 100%;
   height: 2px; /* Line width of 3 */
@@ -158,11 +198,8 @@ main, #main, layoutArea{
   z-index:1;
 }
 
-#p_0{
-  top:20px;
-  left:20px;
-}
-#p_1{
-  top:200px;
-  left:80px;
+.twinelink{
+  font-weight:bold;
+  color:#f00;
+  cursor:pointer;
 }
