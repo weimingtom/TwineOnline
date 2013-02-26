@@ -12,7 +12,7 @@ var Passage = function(x, y, title, tags, text){
   
   title = title || 'Untitled';
   
-  this.passage.append("<div class='title'>"+title+"</div><div class='tags'>"+tags+"</div><div class='text'>"+text+"</div>");
+  this.passage.append("<div class='title'>"+title+"</div><div class='tags'>"+(tags||'')+"</div><div class='text'>"+(text||'')+"</div>");
 
   this.passage.draggable({
     revert:'invalid',
@@ -24,8 +24,10 @@ var Passage = function(x, y, title, tags, text){
   
   this.passage.dblclick(function(e){
     Passage.open(self.pid);
+    Passage.deselect();
     if(e.stopPropagation) e.stopPropagation();
     else if(e.preventPropagation) e.preventPropagation();
+    window.Passage.selected = null;
   });
     
   this.passage.click(function(e){
@@ -33,14 +35,14 @@ var Passage = function(x, y, title, tags, text){
     $(this).addClass('selectedpassage');
     Passage.selected = self;
   });
-  
-  this.passage.deselect = function(){
-    Passage.selected = null;
-    self.passage.removeClass('selectedpassage');
-  }
-  
+    
   this.passage.remove = function(){
+    if(self.pid == 0){
+      showMessage("You cannot delete the Start passage.");
+      return;
+    }
     if(self.passage) $(self.passage).remove();
+    $('.p_'+self.pid).remove();
     delete(self.passage);
   }
   
@@ -65,6 +67,10 @@ Passage.open = function (p){
   
 }
 
+Passage.deselect = function(){
+  Passage.selected = null;
+  $('.selectedpassage').removeClass('selectedpassage');
+}
 
 
 window.Passage = Passage;

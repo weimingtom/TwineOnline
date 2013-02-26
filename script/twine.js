@@ -1,4 +1,10 @@
 function drawLine(pid1, pid2){
+  if(pid1 > pid2) {
+    t = pid1;
+    pid1 = pid2;
+    pid2 = t;
+  }
+  if($('#'+pid1+'_'+pid2).length > 0) return;
   var yOffset = $('main').position().top;
   var $e1 = $('#p_' + pid1);
   var $e2 = $('#p_' + pid2);
@@ -37,9 +43,9 @@ function redrawLines(pid){
   });
 }
 
-
-
-
+function showMessage(m){
+  alert(m);
+}
 
 $(function(){
     
@@ -61,6 +67,7 @@ $(function(){
   
   $(document).bind("click",function(event){
     $('menu').fadeOut("fast");
+    Passage.deselect();
   });
   
   $(document).keydown(function(e){

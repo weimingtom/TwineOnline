@@ -2,6 +2,7 @@
 
 var Editor = function(pid){
   var self = this;
+  self.pid = pid;
   var oldHtml;
   $('main').append("<div id=\"edit_" + pid + "\" class=\"draggable edit popup\"><div class='titlebar'><div class='title'>Edit<input id=\"edit_" + pid + "_close\" class=\"barbutton closebutton\" type='button' value='X'/></div><div class='clear'></div></div><div class='topfields'><div class='field'><label for=\"edit_" + pid + "_title\">Title</label><input id='edit_" + pid + "_title' type='text'/></div><div class='field'><label for=\"edit_" + pid + "_tags\">Tags (separate with spaces)</label><input id='edit_" + pid + "_tags' type='text'/></div><div contentEditable='true' class='passagetext' id='edit_" + pid + "_text' ></div></div>");
   this.editor = $('#edit_'+pid);
@@ -9,7 +10,7 @@ var Editor = function(pid){
   $('#edit_'+pid+'_tags').val($('#p_'+pid+' .tags').text()||'');
   $('#edit_'+pid+'_text').val($('#p_'+pid+' .text').text()||'');
   
-  this.editor.draggable();
+  this.editor.draggable({handle:".title"});
   this.editor.find('.closebutton').click(function(){
     self.editor.fadeOut();
   });
@@ -38,6 +39,13 @@ var Editor = function(pid){
   });
 
   this.highlight = function($textbox){
+    var links = $textbox.text().match(/\[\[[^\]]+\]\]/g);
+    $(links).each(function(){
+      var to = $('.passage[title=\'' + this.toString().replace(/[\[\]]/g,'') + '\']');
+      if(to) drawLine(self.pid, to.attr('pid'));
+    });
+    return;
+    // Solving this problem later.
     cursorPos = $textbox.caret();
     console.log(cursorPos);
     html = $textbox.html().replace(/<span class=["']twinelink["']>(\[\[[\w\s]+\]\])<\/span>/gi, "$1")
@@ -47,7 +55,7 @@ var Editor = function(pid){
   }
   
   this.editor.find('#edit_'+pid+'_text').focus();
-  Passage.selected.passage.deselect();
+  
   return this;
 }
 
