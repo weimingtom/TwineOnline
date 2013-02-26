@@ -38,9 +38,12 @@ var Editor = function(pid){
   });
 
   this.highlight = function($textbox){
+    cursorPos = $textbox.caret();
+    console.log(cursorPos);
     html = $textbox.html().replace(/<span class=["']twinelink["']>(\[\[[\w\s]+\]\])<\/span>/gi, "$1")
     html = html.replace(/(\[\[[^\]]+\]\])/g,"<span class='twinelink'>$1</span>");
     $textbox.html(html);
+    $textbox.caret(cursorPos);
   }
   
   this.editor.find('#edit_'+pid+'_text').focus();
